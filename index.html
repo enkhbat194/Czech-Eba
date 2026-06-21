@@ -1,1 +1,44 @@
-<!doctype html><html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CzechMN</title><style>html,body,iframe{margin:0;width:100%;height:100%;border:0;background:#0a0a0b}iframe{display:block}</style></head><body><iframe src="./lesson1.html" title="CzechMN"></iframe></body></html>
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CzechMN</title>
+<style>
+:root{--bg:#0a0a0b;--card:#101024;--panel:#1b1b1e;--line:#35353a;--gold:#f6ae18;--green:#16572a;--red:#692727;--muted:#aaa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial}.app{max-width:560px;margin:auto;min-height:100vh;padding:18px}.top{font-size:20px;font-weight:900;color:var(--gold);margin-bottom:18px}.head{display:flex;align-items:center;gap:10px}.head b{flex:1}.head small{color:var(--muted)}.bar{height:8px;background:#333;border-radius:99px;overflow:hidden;margin:14px 0}.bar i{display:block;height:100%;background:var(--gold);border-radius:99px}.card{border:2px solid var(--gold);border-radius:24px;padding:28px;min-height:420px;background:var(--card);display:flex;flex-direction:column}.tag{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:2px}.word{font-size:58px;font-weight:900;margin:24px 0}.meaning{font-size:26px;color:var(--gold);font-weight:800}.pron{font-size:19px;color:#ddd}.sound{border:0;border-radius:14px;background:#29292d;color:#fff;padding:13px;font-size:18px;font-weight:800;touch-action:manipulation}.choices{display:grid;gap:10px;margin-top:10px}.choice,.next{width:100%;border-radius:14px;padding:16px;font-size:18px;font-weight:800;touch-action:manipulation}.choice{border:1px solid var(--line);background:var(--panel);color:#fff;text-align:left}.choice.ok{background:var(--green);border-color:#50cf70}.choice.bad{background:var(--red);border-color:#e16a62}.next{border:0;background:var(--gold);color:#16120b;margin-top:auto}.hint{margin-top:auto;color:#858585;text-align:center;font-size:13px;line-height:1.4}.done{text-align:center;padding:55px 15px}.done h1{font-size:36px;color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="app"><div class="top">🇨🇿 CzechMN</div><main id="root"></main></div>
+<script>
+const WORDS=[
+ {cs:'Já',mn:'Би',pron:'яа'},
+ {cs:'Ty',mn:'Чи',pron:'ти'},
+ {cs:'On',mn:'Тэр (эр)',pron:'он'},
+ {cs:'Ona',mn:'Тэр (эм)',pron:'она'}
+];
+let phase=0,pos=0,locked=false,options=[];
+const root=document.getElementById('root');
+const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+function speak(text){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='cs-CZ';u.rate=.78;speechSynthesis.speak(u)}
+function bindTap(el,fn){el.addEventListener('pointerup',e=>{e.preventDefault();fn(e.currentTarget)},{passive:false})}
+function progress(){return Math.round(((phase*4+pos)/12)*100)}
+function advance(){pos++;locked=false;options=[];if(pos>=WORDS.length){pos=0;phase++}render()}
+function choose(button,index){if(locked)return;locked=true;const answer=phase===1?WORDS[pos].mn:WORDS[pos].cs;const correct=options[index]===answer;button.classList.add(correct?'ok':'bad');if(!correct){const right=[...document.querySelectorAll('.choice')].find(x=>x.dataset.value===answer);if(right)right.classList.add('ok')}setTimeout(advance,correct?450:1000)}
+function render(){
+ if(phase>=3){root.innerHTML='<section class="done"><div class="tag">LESSON COMPLETE</div><h1>Сайн байна.</h1><p>Já, Ty, On, Ona гэсэн үгийг эхлээд сурч, дараа нь 2 чиглэлд шалгалаа.</p><button class="next" id="restart">Дахин хийх</button></section>';bindTap(document.getElementById('restart'),()=>{phase=0;pos=0;locked=false;options=[];render()});return}
+ const w=WORDS[pos];
+ const head='<div class="head"><b>Төлөөний үг</b><small>'+(pos+1)+'/4</small></div><div class="bar"><i style="width:'+progress()+'%"></i></div>';
+ if(phase===0){root.innerHTML=head+'<section class="card"><div class="tag">ШИНЭ ҮГ</div><div class="word">'+w.cs+'</div><button class="sound" id="sound">🔊 Сонсох</button><div class="meaning">'+w.mn+'</div><p class="pron">Дуудлага: '+w.pron+'</p><p class="hint">Эхлээд үгийг сурна. Энэ шатанд таалгадаггүй.</p><button class="next" id="next">Дараах үг</button></section>';bindTap(document.getElementById('sound'),()=>speak(w.cs));bindTap(document.getElementById('next'),advance);return}
+ const isCsToMn=phase===1;
+ const prompt=isCsToMn?w.cs:w.mn;
+ const answer=isCsToMn?w.mn:w.cs;
+ if(!options.length)options=shuffle(WORDS.map(x=>isCsToMn?x.mn:x.cs));
+ root.innerHTML=head+'<section class="card"><div class="tag">'+(isCsToMn?'УТГЫГ ТАНЬ':'CZECH ҮГИЙГ САНА')+'</div><div class="word">'+prompt+'</div>'+(isCsToMn?'<button class="sound" id="sound">🔊 Сонсох</button>':'')+'<div class="choices" id="choices"></div><p class="hint">Зөв бол автоматаар дараагийн дасгал руу орно.</p></section>';
+ if(isCsToMn)bindTap(document.getElementById('sound'),()=>speak(w.cs));
+ const box=document.getElementById('choices');
+ options.forEach((value,index)=>{const b=document.createElement('button');b.className='choice';b.textContent=value;b.dataset.value=value;bindTap(b,btn=>choose(btn,index));box.appendChild(b)});
+}
+render();
+</script>
+</body></html>
