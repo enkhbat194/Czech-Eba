@@ -1,16 +1,11 @@
-{
-  "version": 1,
-  "language": "cs-CZ",
-  "lessons": [
-    {"id":"alphabet","title":"Czech цагаан толгой","emoji":"🔤","items":["A","Á","B","C","Č","D","Ď","E","É","Ě","F","G","H","CH","I","Í","J","K","L","M","N","Ň","O","Ó","P","Q","R","Ř","S","Š","T","Ť","U","Ú","Ů","V","W","X","Y","Ý","Z","Ž"]},
-    {"id":"greetings","title":"Мэндчилгээ","emoji":"👋","items":["Dobrý den","Ahoj","Na shledanou","Prosím","Děkuji","Promiňte","Ano","Ne","Dobrý den, jak se máte?","Ahoj! Jak se máš?","Na shledanou!","Prosím, kde je záchod?","Děkuji moc!","Promiňte, nerozumím.","Ano, rozumím.","Ne, děkuji."]},
-    {"id":"numbers","title":"Тоо","emoji":"🔢","items":["jedna","dva","tři","čtyři","pět","šest","sedm","osm","devět","deset","jedenáct","dvanáct","třináct","čtrnáct","patnáct","šestnáct","sedmnáct","osmnáct","devatenáct","dvacet","třicet","čtyřicet","padesát","šedesát","sedmdesát","osmdesát","devadesát","sto","tisíc","Jedna káva, prosím.","Dva lístky, prosím.","Tři hodiny.","Čtyři lidé.","Za pět minut.","Deset korun.","Sto korun.","Tisíc korun."]},
-    {"id":"intro","title":"Өөрийгөө танилцуулах","emoji":"🙋","items":["Jmenuji se","Jsem z Mongolska","Kolik je ti let?","Mluvíte česky?","Nerozumím","Mluvte pomalu","Prosím, zopakujte to.","Jak se to řekne česky?","Jak se to píše?","Rozumím.","Nerozumím tomu.","Mluvím trochu česky.","Nemluvím dobře česky.","Jmenuji se Bat.","Jsem z Mongolska.","Je mi dvacet let.","Trochu mluvím česky.","Prosím, mluvte pomalu."]},
-    {"id":"food","title":"Хоол ба кафе","emoji":"☕","items":["káva","čaj","voda","chléb","maso","zelenina","ovoce","mléko","cukr","sůl","jídlo","restaurace","obchod","účet","Kolik to stojí?","Černý čaj, prosím.","Sklenici vody, prosím.","Čerstvý chléb.","Hovězí maso.","Čerstvá zelenina.","Účet, prosím."]},
-    {"id":"transport","title":"Тээвэр ба зам","emoji":"🚌","items":["vlak","autobus","metro","tramvaj","letiště","zastávka","nádraží","jízdenka","taxi","auto","silnice","doprava","vlevo","vpravo","rovně","Kde je?","Kam jedete?","Jak se dostanu?","Vlak do Prahy.","Autobus číslo pět.","Stanice metra.","Jak se dostanu na letiště?","Kde je zastávka?","Jednu jízdenku, prosím.","Kde je nádraží?","Jeďte rovně.","Odbočte vlevo.","Odbočte vpravo."]},
-    {"id":"city","title":"Хот ба байршил","emoji":"🏙️","items":["Praha","ulice","náměstí","nemocnice","lékárna","banka","pošta","hotel","byt","dům","toaleta","záchod","vchod","výstup","adresa","Kde je nemocnice?","Hledám lékárnu.","Kde je obchod?","Jaká je vaše adresa?","Kde je vchod?","Kde je výstup?"]},
-    {"id":"family-work","title":"Гэр бүл ба ажил","emoji":"👨‍👩‍👧","items":["matka","otec","sestra","bratr","manžel","manželka","dítě","rodina","kamarád","přítel","přítelkyně","práce","firma","šéf","kolega","směna","peníze","plat","hodina","dnes","zítra","včera","ráno","odpoledne","večer","noc","Jdu do práce.","Kolik hodin pracujete?","Dnes mám směnu.","Zítra nepracuji.","Kolik je hodin?"]},
-    {"id":"weather","title":"Цаг агаар","emoji":"🌤️","items":["slunce","déšť","sníh","vítr","teplo","zima","horko","chladno","počasí","Dnes je teplo.","Dnes je zima.","Prší.","Sněží.","Fouká vítr.","Jaké je počasí?"]},
-    {"id":"survival","title":"Яаралтай ба өдөр тутам","emoji":"⚠️","items":["možná","dobře","špatně","hodně","málo","velký","malý","nový","starý","rychle","pomalu","teď","později","pomoc","Prosím pomozte mi","pozor","nebezpečí","Mám problém.","Potřebuji pomoc.","Zavolejte policii.","Zavolejte sanitku.","Je to nebezpečné."]}
-  ]
-}
+{"version":2,"language":"cs-CZ","lessons":[
+{"id":"pronouns","title":"Төлөөний үг ба асуулт","emoji":"❓","items":["Já","Ty","On","Ona","Ono","My","Vy","Oni","Kdo","Co","Kde","Kam","Kdy","Jak","Proč","Kolik"]},
+{"id":"connectors","title":"Холбоос ба чиглэл","emoji":"🧭","items":["A","Ale","Nebo","Protože","Když","Tady","Tam","Blízko","Daleko","Rovně","Doleva","Doprava"]},
+{"id":"verbs","title":"Хамгийн чухал үйл үг","emoji":"⚙️","items":["Být","Mít","Dělat","Chtít","Moci","Muset","Vědět","Znát","Jít","Jet","Mluvit","Rozumět","Koupit","Pracovat","Studovat"]},
+{"id":"greetings","title":"Өдөр тутмын суурь фразууд","emoji":"👋","items":["Dobrý den","Ahoj","Dobrý večer","Dobrou noc","Na shledanou","Děkuji","Prosím","Promiňte","Ano","Ne","Nerozumím","Nevím","Kolik to stojí?"]},
+{"id":"city","title":"Хот, тээвэр ба баримжаа","emoji":"🚌","items":["Město","Ulice","Náměstí","Dům","Byt","Obchod","Nádraží","Zastávka","Letiště","Nemocnice","Lékárna","Policie","Restaurace","Záchod","WC","Jízdenka","Auto","Autobus","Tramvaj","Metro"]},
+{"id":"food","title":"Хүнс ба хоол ундаa","emoji":"🍽️","items":["Jídlo","Pití","Chléb","Chleba","Voda","Mléko","Maso","Kuře","Rýže","Brambory","Zelenina","Ovoce","Káva","Čaj","Pivo","Snídaně","Oběd","Večeře"]},
+{"id":"family","title":"Гэр бүл ба хүмүүс","emoji":"👨‍👩‍👧","items":["Rodina","Muž","Žena","Otec","Táta","Matka","Máma","Syn","Dcera","Bratr","Sestra","Dítě","Děti","Kamarád","Kamarádka","Člověk"]},
+{"id":"time","title":"Тоо ба цаг хугацаа","emoji":"🔢","items":["Jeden","Jedna","Jedno","Dva","Dvě","Tři","Čtyři","Pět","Šest","Sedm","Osm","Devět","Deset","Sto","Tisíc","Den","Týden","Měsíc","Rok","Dnes","Včera","Zítra","Ráno","Večer","Noc"]},
+{"id":"adjectives","title":"Тэмдэг нэрс","emoji":"🎨","items":["Velký","Malý","Dobrý","Špatný","Nový","Starý","Krásný","Drahý","Levný","Teplý","Studený","Rychlý","Pomalý"]}
+]}
