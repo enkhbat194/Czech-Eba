@@ -1,9 +1,9 @@
 (() => {
   const root = document.getElementById('root');
   const lessons = [
-    { text: 'Ahoj, jak se máš?', mn: 'Сайн уу, сонин сайхан юу байна?', tip: "2-р хичээл дээр үзсэн мэндчилгээний бүтцийг ашиглана уу." },
-    { text: 'Jmenuji se Bat.', mn: 'Намайг Бат гэдэг.', tip: "Jmenuji se = Намайг ... гэдэг гэсэн утгатай." },
-    { text: 'Děkuji, mám se dobře.', mn: 'Баярлалаа, би сайн байна.', tip: "mám se dobře = би сайн байна." }
+    { text: 'Ahoj, jak se máš?', mn: 'Сайн уу, сонин сайхан юу байна?', tip: '2-р хичээл дээр үзсэн мэндчилгээний бүтцийг ашиглана уу.' },
+    { text: 'Jmenuji se Bat.', mn: 'Намайг Бат гэдэг.', tip: 'Jmenuji se = Намайг ... гэдэг гэсэн утгатай.' },
+    { text: 'Děkuji, mám se dobře.', mn: 'Баярлалаа, би сайн байна.', tip: 'mám se dobře = би сайн байна.' }
   ];
   const state = { screen: localStorage.getItem('octo_screen') || 'levels', level:'A0', lessonIndex:0, correctWordIndices:[], isLessonCompleted:false, listening:false, error:'' };
   const save = () => localStorage.setItem('octo_screen', state.screen);
@@ -21,7 +21,7 @@
   }
 
   function birthday(){
-    root.innerHTML=`<section class="birthday"><div class="cake">🎂</div><h1 class="homeTitle">Төрсөн өдрөө оруулна уу</h1><p class="sub">Бид таны суралцах туршлагыг хувийн болгоход ашиглана</p><div class="wheel"><div><span>1988</span><span>1989</span><strong>1990</strong><span>1991</span><span>1992</span></div><div><span>March</span><span>April</span><strong>May</strong><span>June</span><span>July</span></div><div><span>1</span><span>2</span><strong>3</strong><span>4</span><span>5</span></div></div><div class="selectedDate">1990 оны 05 сарын 03</div><button class="primary orange" id="continue">Үргэлжлүүлэх</button></section>`;
+    root.innerHTML=`<section class="birthday"><div class="cake">🎂</div><h1 class="homeTitle">Төрсөн өдрөө оруулна уу</h1><p class="sub">Бид таны суралцах туршлагыг хувийн болгоход ашиглана</p><div class="wheel"><div><span>1988</span><span>1989</span><strong>1990</strong><span>1991</span><span>1992</span></div><div><span>3 сар</span><span>4 сар</span><strong>5 сар</strong><span>6 сар</span><span>7 сар</span></div><div><span>1</span><span>2</span><strong>3</strong><span>4</span><span>5</span></div></div><div class="selectedDate">1990 оны 05 сарын 03</div><button class="primary orange" id="continue">Үргэлжлүүлэх</button></section>`;
     document.getElementById('continue').onclick=()=>{state.screen='lesson';save();renderLesson();};
   }
 
@@ -63,11 +63,11 @@
   }
 
   function renderLesson(){
-    const lesson=lessons[state.lessonIndex]; const words=targetWords(); const completed=state.correctWordIndices.length;
+    const lesson=lessons[state.lessonIndex];
     const buttonClass=state.isLessonCompleted?'primary success':state.listening?'primary listening':'primary';
     const buttonText=state.isLessonCompleted?'✓ Үргэлжлүүлэх':state.listening?'🎙 Сонсож байна...':'🎤 Дуудлага шалгах';
     const display=lesson.text.replace(/^([^ ]+)/, '<span class="hit">$1</span>');
-    root.innerHTML=`${header(state.lessonIndex+1)}<section class="octoTip"><div class="octo">🐙</div><div class="tip">${lesson.tip}</div></section><section class="phrase"><h1>${display}</h1><p class="translation">${lesson.mn}</p><button class="replay" id="replay">🔊</button><div class="replayLabel">Replay</div></section><div class="actions"><div class="secondary"><button id="flash">🗂 Флэшкарт+</button><button id="skip">⏭ Алгасах</button></div>${state.error?`<p class="notice">${state.error}</p>`:''}<button class="${buttonClass}" id="speak">${buttonText}</button></div>`;
+    root.innerHTML=`${header(state.lessonIndex+1)}<section class="octoTip"><div class="octo">🐙</div><div class="tip">${lesson.tip}</div></section><section class="phrase"><h1>${display}</h1><p class="translation">${lesson.mn}</p><button class="replay" id="replay">🔊</button><div class="replayLabel">Дахин сонсох</div></section><div class="actions"><div class="secondary"><button id="flash">🗂 Флэшкарт+</button><button id="skip">⏭ Алгасах</button></div>${state.error?`<p class="notice">${state.error}</p>`:''}<button class="${buttonClass}" id="speak">${buttonText}</button></div>`;
     document.getElementById('replay').onclick=replay;
     document.getElementById('speak').onclick=startRecognition;
     document.getElementById('skip').onclick=()=>{state.lessonIndex=(state.lessonIndex+1)%lessons.length;state.correctWordIndices=[];renderLesson();};
