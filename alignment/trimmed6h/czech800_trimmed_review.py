@@ -16,6 +16,7 @@ MKV = ROOT / "raw" / "Czech800_tairsan.mkv"
 INDEX = DATA / "trimmed6h_index_909.json"
 TARGETS = DATA / "czech_810_alignment_targets.json"
 REVIEW = DATA / "trimmed6h_reviewed.json"
+AUTO = DATA / "trimmed6h_ctc_candidates.json"
 WORK.mkdir(parents=True, exist_ok=True)
 for path in (MKV, INDEX, TARGETS):
     if not path.exists():
@@ -32,6 +33,11 @@ app = Flask(__name__)
 def load_review():
     if REVIEW.exists():
         return json.loads(REVIEW.read_text(encoding="utf-8-sig"))
+    return {}
+
+def load_auto():
+    if AUTO.exists():
+        return json.loads(AUTO.read_text(encoding="utf-8-sig")).get("candidates", {})
     return {}
 
 def save_review(items):
@@ -62,11 +68,13 @@ video{width:100%;max-width:680px;max-height:350px;background:#000}
 .number{width:115px}#status{margin:12px}span.badge{padding:4px 8px;border:1px solid #607c9c;border-radius:9px;font-size:12px}
 </style></head><body><header><b>Czech800 — тайрагдсан 6:45:17 MKV, ярианы хугацаа</b>
 <div class="small">909 дэлгэцийн SRT хүрээ + 810 Чех карт + Colab ASR 4046 сегмент. Хугацаа одоогоор баталгаажаагүй.</div>
-<div><input id="query" placeholder="cz_0001 / nadějný"/><button onclick="loadCards()">Хайх / шинэчлэх</button><span id="status"></span></div></header>
+<div><input id="query" placeholder="cz_0001 / nadějný"/><button onclick="loadCards()">Хайх / шинэчлэх</button><button onclick="setQuery('!review')">Зөвхөн шалгах</button><button onclick="setQuery('!high')">CTC боломжийн</button><button onclick="setQuery('')">Бүгд</button><span id="status"></span></div></header>
 <main><div id="cards"></div></main>
 <script>
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 let list=[];
+function setQuery(v){document.getElementById("query").value=v;loadCards();}
+function useCTC(id,j,st,en){document.getElementById("st_"+id+"_"+j).value=st;document.getElementById("en_"+id+"_"+j).value=en;}
 async function loadCards(){
   const p=new URLSearchParams({query:document.getElementById("query").value,limit:40});
   const response=await fetch("/api/cards?"+p.toString());
@@ -87,9 +95,11 @@ async function loadCards(){
     }
     for(let j=0;j<r.candidates.length;j++){
       const s=r.candidates[j],saved=(r.reviewed||{})[String(j)]||{};
-      const start=saved.start_sec==null?s.start_sec:saved.start_sec;
-      const end=saved.end_sec==null?s.end_sec:saved.end_sec;
-      html+='<div class="small">ASR segment #'+esc(s.segment_id)+' — '+(saved.verified?"сонсож баталсан":"баталгаажаагүй")+'</div>'
+      const stAuto=(r.auto||{})[String(s.segment_id)]||null;
+      const start=saved.start_sec==null?(stAuto&&stAuto.start_sec!=null?stAuto.start_sec:s.start_sec):saved.start_sec;
+      const end=saved.end_sec==null?(stAuto&&stAuto.end_sec!=null?stAuto.end_sec:s.end_sec):saved.end_sec;
+      html+='<div class="small">ASR segment #'+esc(s.segment_id)+' — '+(saved.verified?"сонсож баталсан":"баталгаажаагүй")
+        +(stAuto?(' | Чех CTC: '+esc(stAuto.status)+' | score '+esc(stAuto.mean_ctc_score)):' | CTC хараахан тооцоогүй')+'</div>'
         +'<label>Start <input class="number" type="number" step=".001" id="st_'+r.id+'_'+j+'" value="'+start+'"/></label>'
         +'<label>End <input class="number" type="number" step=".001" id="en_'+r.id+'_'+j+'" value="'+end+'"/></label>'
         +'<button onclick="playAudio(\''+r.id+'\','+j+')">Сонсох</button>'
@@ -131,16 +141,28 @@ def api_cards():
     limit=min(100,max(1,request.args.get("limit",40,type=int)))
     found=[]
     reviewed=load_review()
+    auto=load_auto()
     for uid,t in targets.items():
-        if q and q not in (uid+" "+str(t.get("czech_original",""))+" "+str(t.get("mongolian_word",""))).lower():
-            continue
         c=cues.get(uid,{})
+        candidates=c.get("asr_exact_sentence_candidates",[])
+        auto_for={str(x["segment_id"]):auto.get(uid+":"+str(x["segment_id"])) for x in candidates if uid+":"+str(x["segment_id"]) in auto}
+        if q == "!review":
+            if c.get("match_method")=="NOT_MAPPED" or not candidates or not auto_for:
+                pass
+            elif all(x and x.get("status")=="HIGH_CONFIDENCE_CANDIDATE_NOT_VERIFIED" for x in auto_for.values()) and len(auto_for)==len(candidates):
+                continue
+        elif q == "!high":
+            if not any(x and x.get("status")=="HIGH_CONFIDENCE_CANDIDATE_NOT_VERIFIED" for x in auto_for.values()):
+                continue
+        elif q and q not in (uid+" "+str(t.get("czech_original",""))+" "+str(t.get("mongolian_word",""))).lower():
+            continue
         found.append({
             "id":uid,"czech":t.get("czech_original",""),"mongolian":t.get("mongolian_word",""),
             "sentence":t.get("czech_sentence_original",""),"mongolian_sentence":t.get("mongolian_sentence",""),
             "match_method":c.get("match_method","NOT_MAPPED"),"similarity":c.get("text_similarity"),
             "video_start_sec":c.get("video_start_sec"),"video_end_sec":c.get("video_end_sec"),
-            "candidates":c.get("asr_exact_sentence_candidates",[]),
+            "candidates":candidates,
+            "auto":auto_for,
             "reviewed":reviewed.get(uid,{})
         })
     return jsonify({"total":len(found),"cards":found[:limit]})
