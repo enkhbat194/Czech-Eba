@@ -1,0 +1,26 @@
+id,czech,type,start_sec,end_sec,status
+cz_0001,"nadějný",czech_sentence,97.020,101.740,ASR_ESTIMATE_NOT_VERIFIED
+cz_0001,"nadějný",czech_sentence,109.060,119.620,ASR_ESTIMATE_NOT_VERIFIED
+cz_0002,"hluboký",czech_sentence,137.110,140.490,ASR_ESTIMATE_NOT_VERIFIED
+cz_0002,"hluboký",czech_sentence,145.180,152.060,ASR_ESTIMATE_NOT_VERIFIED
+cz_0003,"mělký",czech_sentence,167.380,171.700,ASR_ESTIMATE_NOT_VERIFIED
+cz_0004,"bohatý",czech_sentence,203.420,205.460,ASR_ESTIMATE_NOT_VERIFIED
+cz_0004,"bohatý",czech_sentence,209.620,212.960,ASR_ESTIMATE_NOT_VERIFIED
+cz_0005,"chudý",czech_sentence,229.200,233.040,ASR_ESTIMATE_NOT_VERIFIED
+cz_0006,"obrazovka",czech_sentence,264.190,268.910,ASR_ESTIMATE_NOT_VERIFIED
+cz_0007,"klávesnice",czech_sentence,297.600,301.780,ASR_ESTIMATE_NOT_VERIFIED
+cz_0008,"sluchátka",czech_sentence,332.490,336.010,ASR_ESTIMATE_NOT_VERIFIED
+cz_0009,"škytat",czech_sentence,364.120,367.160,ASR_ESTIMATE_NOT_VERIFIED
+cz_0010,"borůvka",czech_sentence,396.620,400.540,ASR_ESTIMATE_NOT_VERIFIED
+cz_0011,"sušená švestka",czech_sentence,436.120,438.920,ASR_ESTIMATE_NOT_VERIFIED
+cz_0011,"sušená švestka",czech_sentence,442.930,448.990,ASR_ESTIMATE_NOT_VERIFIED
+cz_0012,"mango",czech_sentence,475.620,487.820,ASR_ESTIMATE_NOT_VERIFIED
+cz_0013,"citron",czech_sentence,501.260,503.800,ASR_ESTIMATE_NOT_VERIFIED
+cz_0014,"hýždě",czech_sentence,529.070,532.650,ASR_ESTIMATE_NOT_VERIFIED
+cz_0015,"rameno",czech_sentence,564.180,567.700,ASR_ESTIMATE_NOT_VERIFIED
+cz_0016,"sval",czech_sentence,595.440,599.400,ASR_ESTIMATE_NOT_VERIFIED
+cz_0017,"kost",czech_sentence,629.580,631.620,ASR_ESTIMATE_NOT_VERIFIED
+cz_0017,"kost",czech_sentence,636.690,641.430,ASR_ESTIMATE_NOT_VERIFIED
+cz_0019,"sladká brambora",czech_sentence,696.490,701.430,ASR_ESTIMATE_NOT_VERIFIED
+cz_0019,"sladká brambora",czech_sentence,707.400,718.080,ASR_ESTIMATE_NOT_VERIFIED
+cz_0020,"houba",czech_sentence,734.880,736.540,ASR_ESTIMATE_NOT_VERIFIED
