@@ -410,9 +410,9 @@ el('items').innerHTML=keys.map(k=>{
  const r=rows[k];
  return '<section><div class="row"><b>'+esc(k)+' — '+esc(r.czech)+'</b><span class="'+(r.verified?'good':'bad')+'">'+(r.verified?'REVIEWED':'NOT VERIFIED')+'</span><button onclick="seek('+Number(r.rough_ocr_start_sec)+')">Видеоноос харах</button></div>'
  +'<p>'+esc(r.mongolian)+'</p><p>'+esc(r.czech_sentence)+'</p><p class="reading">'+esc(r.mongolian_sentence)+'</p>'
- +(r.utterances||[]).map((u,i)=>'<div class="item"><div class="row"><span class="meta">#'+i+' • '+esc(u.role_candidate)+' ('+esc(u.match_score)+'%)</span><span class="status">'+esc(u.status||'candidate')+'</span></div>'
+ +(r.utterances||[]).map((u,i)=>'<div class="item"><div class="row"><span class="meta">#'+i+' • '+esc(u.role_candidate)+' ('+esc(u.match_score)+'%)</span><span class="status">'+esc(u.alignment_status||u.status||'candidate')+'</span></div>'
  +'<div class="reading">'+esc(u.text_heard_asr)+'</div>'
- +'<div class="row"><label>Start <input type="number" step=".001" id="s_'+k+'_'+i+'" value="'+u.start_sec+'"/></label><label>End <input type="number" step=".001" id="e_'+k+'_'+i+'" value="'+u.end_sec+'"/></label>'
+ +'<div class="row"><label>Start <input type="number" step=".001" id="s_'+k+'_'+i+'" value="'+(u.reviewed_start_sec ?? u.aligned_start_sec ?? u.start_sec)+'"/></label><label>End <input type="number" step=".001" id="e_'+k+'_'+i+'" value="'+(u.reviewed_end_sec ?? u.aligned_end_sec ?? u.end_sec)+'"/></label>'
  +'<select id="t_'+k+'_'+i+'">'+['czech_word','czech_word_syllabic','czech_sentence','czech_sentence_slow','english_word','english_sentence','skip','unclassified'].map(t=>'<option value="'+t+'" '+((u.role_reviewed||u.role_candidate)===t?'selected':'')+'>'+t+'</option>').join('')+'</select>'
  +'<button onclick="play(\''+k+'\','+i+')">Сонсох</button><button onclick="seek('+u.start_sec+')">Видео</button><button onclick="save(\''+k+'\','+i+',false)">Хадгалах</button><button class="approve" onclick="save(\''+k+'\','+i+',true)">Шалгаад батлах</button></div></div>').join('')
  +'</section>';
