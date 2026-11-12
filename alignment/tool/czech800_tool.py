@@ -209,6 +209,85 @@ def classify(utterance, row):
         return "czech_word", round(w_score, 1)
     return "unclassified", round(max(sentence_score, w_score), 1)
 
+
+def seed(args):
+    """Import previous large-v3 utterance timings without re-transcribing.
+    Original ASR metadata is kept separately; never auto-mark clips as verified.
+    """
+    source_file = DATA / "first20_largev3_asr_legacy.json"
+    blob = read_json(source_file)
+    if not blob:
+        raise RuntimeError("Missing legacy file. Run INSTALL.cmd.")
+    source = blob["items"] if isinstance(blob, dict) else blob
+    targets = {x["id"]: x for x in rows()[:20]}
+    grouped = {uid: [] for uid in targets}
+    for record in source:
+        for u in record.get("utterances", []):
+            parts = u.get("segments", [])
+            speech = " ".join(x.get("text", "") for x in parts).strip()
+            if not speech:
+                continue
+            best = (0, record["id"], "unclassified")
+            for uid, target in targets.items():
+                r, score = classify(speech, target)
+                if r == "unclassified":
+                    continue
+                # Guard against matching another iteration of the same word
+                # far away in the 7-hour source audio.
+                rough = float(target.get("approximate_ocr_start_sec", 0))
+                st = float(u.get("audio_start_sec", 0))
+                if abs(st - rough) > 100:
+                    continue
+                if score > best[0]:
+                    best = (score, uid, r)
+            score, uid, role = best
+            if uid not in grouped:
+                continue
+            st = float(u.get("audio_start_sec", 0))
+            en = float(u.get("audio_end_sec", 0))
+            if en <= st:
+                continue
+            words = []
+            for part in parts:
+                for w in part.get("words", []):
+                    if w.get("start_sec") is not None and w.get("end_sec") is not None:
+                        words.append({"text": w.get("text", ""),
+                                      "start_sec": round(float(w["start_sec"]), 3),
+                                      "end_sec": round(float(w["end_sec"]), 3),
+                                      "probability": w.get("probability")})
+            candidate = {"role_candidate": role, "text_heard_asr": speech,
+                         "match_score": round(score, 1),
+                         "start_sec": round(st, 3), "end_sec": round(en, 3),
+                         "words": words, "status": "LEGACY_ASR_ESTIMATE_NOT_VERIFIED",
+                         "legacy_id": u.get("utterance_id"),
+                         "legacy_parent": record["id"]}
+            grouped[uid].append(candidate)
+    existing = read_json(CANDIDATES, {})
+    for uid, item in targets.items():
+        if uid in existing and not args.force:
+            continue
+        seen = set()
+        candidates = []
+        for u in sorted(grouped[uid], key=lambda x: x["start_sec"]):
+            key = (round(u["start_sec"], 1), round(u["end_sec"], 1), u["text_heard_asr"])
+            if key not in seen:
+                seen.add(key)
+                candidates.append(u)
+        existing[uid] = {
+            "id": uid, "czech": item.get("czech_original"),
+            "mongolian": item.get("mongolian_word"),
+            "czech_sentence": item.get("czech_sentence_original"),
+            "mongolian_sentence": item.get("mongolian_sentence"),
+            "rough_ocr_start_sec": item.get("approximate_ocr_start_sec"),
+            "rough_ocr_end_sec": item.get("approximate_ocr_end_sec"),
+            "frame_green_transition_sec": (read_json(ANCHORS, {}).get(uid) or {}).get("frame_green_transition_sec"),
+            "model": "large-v3", "device": "legacy_connected_drive",
+            "verified": False, "utterances": candidates
+        }
+    atomic_json(CANDIDATES, existing)
+    print(f"Seeded {len(targets)} cards, {sum(len(x) for x in grouped.values())} candidate utterances")
+    print("Output", CANDIDATES, "-- launch RUN.cmd review")
+
 def transcribe(args):
     from faster_whisper import WhisperModel
     setup()
@@ -451,13 +530,15 @@ def main():
     sp.add_argument("--beam",type=int,default=5)
     sp.add_argument("--force",action="store_true")
     sp.add_argument("--keep-wav",action="store_true")
+    sp=cmds.add_parser("seed")
+    sp.add_argument("--force",action="store_true")
     cmds.add_parser("review")
     sp=cmds.add_parser("export")
     sp.add_argument("--force",action="store_true")
     args=parser.parse_args()
     setup()
     return {"check":check,"sync":sync,"scan":scan,"transcribe":transcribe,
-            "review":review,"export":export}[args.command](args)
+            "review":review,"export":export,"seed":seed}[args.command](args)
 
 if __name__=="__main__":
     try:
